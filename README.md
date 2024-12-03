@@ -24,6 +24,10 @@ Ce code rajoute la commande `exit` qui permet de quitter la console. On peut obt
 
 Après l'exécution d'une commande, le prompt devient dynamique et affiche des informations sur l'état de sortie du processus fils, telles que le code de retour ou le signal ayant causé sa terminaison. Ces modifications enrichissent l'expérience utilisateur et renforcent la fonctionnalité et la robustesse du shell.
 
+## 5. Mesure du temps d’exécution de la commande en utilisant l’appel clock_gettime 
 
+![image](https://github.com/user-attachments/assets/af78a4d9-b73e-46f1-9e0d-5557cfacaec9)
+
+Les modifications apportées au programme incluent la mesure du temps d'exécution de chaque commande. Après que le processus fils ait terminé son exécution, le programme calcule le temps écoulé en millisecondes à l'aide de `clock_gettime()` avec l'horloge `CLOCK_MONOTONIC`, et l'affiche dans le prompt. Si la commande s'est terminée normalement, le code de sortie et le temps d'exécution sont affichés, par exemple : `[exit:0|123ms]`. Si la commande a été interrompue par un signal, le signal et le temps d'exécution sont affichés, comme `[sign:9|150ms]`. Cette fonctionnalité permet de visualiser non seulement l'état de la commande mais aussi son temps d'exécution.
 
 
