@@ -69,7 +69,7 @@ int main() {
         }
 
         if (pid == 0) {
-            // Processus enfant : découpage de l'entrée en commande et arguments
+            // Child process
             char *args[256];
             char *token = strtok(input, " ");
             int i = 0;
@@ -80,17 +80,16 @@ int main() {
             }
             args[i] = NULL;
 
-            // Exécution de la commande
             if (execvp(args[0], args) == -1) {
                 perror("Erreur lors de l'exécution de la commande");
                 exit(EXIT_FAILURE);
             }
         } else {
-            // Processus parent : Attente de la fin du processus enfant
+            // Parent process
             int status;
             waitpid(pid, &status, 0);
 
-            // Gestion du statut du processus enfant
+            // Child process status
             if (WIFEXITED(status)) {
                 int exit_code = WEXITSTATUS(status);
                 snprintf(prompt_buffer, sizeof(prompt_buffer), "\nenseash [exit:%d] %% ", exit_code);
