@@ -18,6 +18,12 @@ Ce code améliore le shell précédent en ajoutant plusieurs fonctionnalités. I
 
 Ce code rajoute la commande `exit` qui permet de quitter la console. On peut obtenir le même résultat avec ctrl + D. 
 
+## 4. Affichage du code de retour (ou du signal) de la commande précédente dans le prompt :
+
+![image](https://github.com/user-attachments/assets/11ced065-c7e5-47ba-94ee-34eacbabeb86)
+
+Après l'exécution d'une commande, le prompt devient dynamique et affiche des informations sur l'état de sortie du processus fils, telles que le code de retour ou le signal ayant causé sa terminaison. Ces modifications enrichissent l'expérience utilisateur et renforcent la fonctionnalité et la robustesse du shell.
+
 
 
 
