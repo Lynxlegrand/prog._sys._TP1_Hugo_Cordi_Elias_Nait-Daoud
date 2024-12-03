@@ -8,6 +8,13 @@ Ce code implémente un shell minimaliste en C. Il affiche un message de bienvenu
 
 ## 2. Exécution de la commande saisie et retour au prompt
 
+![image](https://github.com/user-attachments/assets/0157b94a-f211-4c95-99ca-e12c7081bb8e)
+
+Ce code améliore le shell précédent en ajoutant plusieurs fonctionnalités. Il introduit la commande `fortune`, qui affiche un message fixe et l'heure actuelle. Le shell peut également exécuter des commandes système saisies par l'utilisateur grâce à la création de processus fils via `fork`. Les commandes et leurs arguments sont analysés à l'aide de `strtok` avant d'être exécutés avec `execlp`. Le processus parent attend la fin du processus fils avec `waitpid`. Ces améliorations rendent le shell fonctionnel pour exécuter des commandes simples, tout en maintenant une structure interactive et minimaliste.
+
+## 3. Gestion de la sortie du shell avec la commande “exit” ou un <ctrl>+d;
+
+
 
 
 
