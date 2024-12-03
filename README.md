@@ -14,6 +14,8 @@ Ce code améliore le shell précédent en ajoutant plusieurs fonctionnalités. I
 
 ## 3. Gestion de la sortie du shell avec la commande “exit” ou un <ctrl>+d;
 
+![image](https://github.com/user-attachments/assets/adbb7a02-7ad3-43c4-920f-fdff85f45d9f)
+
 
 
 
