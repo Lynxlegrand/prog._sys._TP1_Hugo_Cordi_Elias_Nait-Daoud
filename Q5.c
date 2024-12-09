@@ -5,20 +5,20 @@
 #include <sys/wait.h>
 #include <time.h>
 
-#define PROMPT "\n \nenseash % "
+#define PROMPT "\nenseash % "
 
 int main() {
     char input[256];
-    char prompt_buffer[64];
+    char prompt_buffer[64]; // For storing the dynamic prompt
     snprintf(prompt_buffer, sizeof(prompt_buffer), "%s", PROMPT);
 
     write(STDOUT_FILENO, "$ ./enseash", 11);
-    write(STDOUT_FILENO, "\nBienvenue dans le Shell ENSEA.\nPour quitter, tapez 'exit'.", 58);
+    write(STDOUT_FILENO, "\nWelcome to the ENSEA Shell.\nTo quit, type 'exit'.", 50);
 
     while (1) {
         write(STDOUT_FILENO, prompt_buffer, strlen(prompt_buffer));
 
-        // Read input
+        // Read user input
         ssize_t bytes_read = read(STDIN_FILENO, input, sizeof(input) - 1);
         if (bytes_read <= 0) {
             write(STDOUT_FILENO, "\nBye bye...\n", 12);
@@ -28,63 +28,35 @@ int main() {
         // Clear input
         input[bytes_read - 1] = '\0';
 
-        // 'exit' prompt
+        // 'exit' command
         if (strcmp(input, "exit") == 0) {
             write(STDOUT_FILENO, "Bye bye...\n", 11);
             break;
         }
 
-        // 'fortune' prompt
-        if (strcmp(input, "fortune") == 0) {
-            write(STDOUT_FILENO, "Today is what happened to yesterday.\n", 37);
-
-            // Get the current date and time
-            time_t now = time(NULL);
-            if (now == -1) {
-                perror("Erreur lors de la récupération de l'heure");
-                continue;
-            }
-
-            char time_str[128];
-            struct tm *local_time = localtime(&now);
-            if (local_time == NULL) {
-                perror("Erreur lors de la conversion de l'heure");
-                continue;
-            }
-
-            strftime(time_str, sizeof(time_str), "%a %b %d %H:%M:%S %Z %Y", local_time);
-            write(STDOUT_FILENO, time_str, strlen(time_str));
-            write(STDOUT_FILENO, "\n", 1);
-
-            snprintf(prompt_buffer, sizeof(prompt_buffer), "%s", PROMPT);
-            continue;
-        }
-
-        // Create a child process to execute the command
+        // Fork to create the child process
         pid_t pid = fork();
         if (pid < 0) {
-            perror("Erreur lors du fork");
+            perror("Error during fork");
             continue;
         }
 
         if (pid == 0) {
-            // Child process
-            char *args[256];
-            char *token = strtok(input, " ");
-            int i = 0;
+            // Child process: execute the command
+            char *command = strtok(input, " "); // Get the command
+            char *arg = strtok(NULL, " ");     // Get the argument
 
-            while (token != NULL) {
-                args[i++] = token;
-                token = strtok(NULL, " ");
+            // Execute the command using execlp
+            if (arg != NULL) {
+                execlp(command, command, arg, NULL); // Command with argument
+            } else {
+                execlp(command, command, NULL); // Simple command
             }
-            args[i] = NULL;
 
-            if (execvp(args[0], args) == -1) {
-                perror("Erreur lors de l'exécution de la commande");
-                exit(EXIT_FAILURE);
-            }
+            perror("Error executing the command");
+            exit(EXIT_FAILURE);
         } else {
-            // Parent process
+            // Parent process: wait for the child process to finish
             int status;
 
             // Get the start time
@@ -99,7 +71,29 @@ int main() {
             // Calculate the elapsed time in milliseconds
             long long elapsed_time_ms = (end_time.tv_sec - start_time.tv_sec) * 1000 + (end_time.tv_nsec - start_time.tv_nsec) / 1000000;
 
-            // Child process status
+            // If the command is 'fortune', display the date and time
+            if (strcmp(input, "fortune") == 0) {
+                time_t now = time(NULL);
+                if (now == -1) {
+                    perror("Error getting the time");
+                    continue;
+                }
+
+                char time_str[128];
+                struct tm *local_time = localtime(&now);
+                if (local_time == NULL) {
+                    perror("Error converting the time");
+                    continue;
+                }
+
+                strftime(time_str, sizeof(time_str), "%a %b %d %H:%M:%S %Z %Y", local_time);
+                write(STDOUT_FILENO, "$ ./enseash", 11);
+                write(STDOUT_FILENO, "\n", 2);
+                write(STDOUT_FILENO, time_str, strlen(time_str));
+                write(STDOUT_FILENO, "\n", 1);
+            }
+
+            // Update the prompt with the exit status and elapsed time
             if (WIFEXITED(status)) {
                 int exit_code = WEXITSTATUS(status);
                 snprintf(prompt_buffer, sizeof(prompt_buffer), "\nenseash [exit:%d|%lldms] %% ", exit_code, elapsed_time_ms);

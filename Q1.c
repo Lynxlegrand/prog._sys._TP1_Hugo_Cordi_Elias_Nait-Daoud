@@ -24,6 +24,11 @@ int main() {
         // Clear the input
         input[bytes_read - 1] = '\0'; // Remplace '\n' par '\0'
 
+        // 'exit' prompt
+        if (strcmp(input, "exit") == 0) {
+            write(STDOUT_FILENO, "Bye bye...\n", 11);
+            break;
+        }
     }
 
     return 0;
