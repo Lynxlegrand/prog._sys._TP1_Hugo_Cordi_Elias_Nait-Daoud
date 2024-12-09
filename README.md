@@ -33,6 +33,9 @@ Les modifications apportées au programme incluent la mesure du temps d'exécuti
 
 ## 7. "Gestion des redirections vers stdin et stdout avec ‘<’ et ‘>’ 
 
+![image](https://github.com/user-attachments/assets/9bf2340d-717b-4eee-811e-f1537a5f96cf)
+
+
 On veut avoir une gestion de commandes avec redirections. Pour cela, lorsque > est détecté, la sortie standard stdout doit être redirigée vers un fichier, et lorsque < est détecté, l'entrée standard stdin doit être redirigée depuis un fichier. Pour cela, on utilise les flags redir_in et redir_out qui indique si une redirection d'entrée (<) ou de sortie (>) est détectée, et fd qui est un descripteur de fichier, utilisé pour ouvrir et manipuler les fichiers redirigés. La commande strtok(input, " ") divise la commande utilisateur (input) en morceaux, séparés par des espaces, puis on parcourt chaque morceaux dans une boucle. Puis, par exemple si redir_out est activé et qu'un nom de fichier (file) est défini, on entre dans ce bloc avec la commande open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644) où O_WRONLY : Ouvre le fichier en mode écriture ; O_CREAT : Crée le fichier s'il n'existe pas ; O_TRUNC : Tronque le fichier à une taille de 0 s'il existe déjà ; 0644 : Définit les permissions du fichier (lecture pour tous, écriture pour l'utilisateur). Puis on utlise la commande dup2(fd, STDOUT_FILENO) qui redirige la sortie standard (écran) vers le fichier ouvert (fd). Après cette opération, tout ce qui est écrit sur stdout ira dans le fichier. De même si redir_in est activé, cette fois on ouvre le fichier en mode lecture seulement avec O_RDONLY et la commande dup2(fd, STDIN_FILENO) redirige l'entrée standard (clavier) vers le fichier ouvert (fd). Après cette opération, tout ce qui est lu depuis stdin proviendra du fichier.
 
 
