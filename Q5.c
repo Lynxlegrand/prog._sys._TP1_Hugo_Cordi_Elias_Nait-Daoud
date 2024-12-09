@@ -88,10 +88,12 @@ int main() {
 
                 strftime(time_str, sizeof(time_str), "%a %b %d %H:%M:%S %Z %Y", local_time);
                 write(STDOUT_FILENO, "$ ./enseash", 11);
-                write(STDOUT_FILENO, "\n", 2);
+                write(STDOUT_FILENO, "\n", 1);
                 write(STDOUT_FILENO, time_str, strlen(time_str));
                 write(STDOUT_FILENO, "\n", 1);
             }
+            
+            
 
             // Update the prompt with the exit status and elapsed time
             if (WIFEXITED(status)) {
